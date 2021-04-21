@@ -1,3 +1,5 @@
+package Ejercicio_Basicos_2;
+
 import java.util.Scanner;
 
 public class Ejercicio9 {

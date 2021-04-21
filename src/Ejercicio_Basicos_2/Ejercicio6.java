@@ -1,3 +1,5 @@
+package Ejercicio_Basicos_2;
+
 public class Ejercicio6 {
     public static void main(String[] args) {
         final int MAX = 100;
