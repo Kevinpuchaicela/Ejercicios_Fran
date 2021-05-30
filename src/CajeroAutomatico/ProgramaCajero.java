@@ -4,45 +4,48 @@ import java.util.Scanner;
 
 public class ProgramaCajero {
     public static void main(String[] args) {
-        int[][] carga_billetes = {{500, 1}, {200, 3}, {100, 0}, {50, 0}, {20, 0}, {10, 18}, {5, 25}};
-        Scanner sc = new Scanner(System.in);
         CajeroAutomatico micajero = new CajeroAutomatico();
-        int opcionSeleccionada;
-        int efectivoSolicitado = 0;
         boolean continuar = true;
-        String NIF;
-        int PIN;
 
-        TarjetaDebito mitarj1 = new TarjetaDebito("12345678a", 1111, "Fran", "Fran", 2000);
-        TarjetaCredito mitarj2 = new TarjetaCredito("87654321b", 2222, "Javi", "Javi", 10, 1000);
+        micajero.inicializarDatosCajero();
 
-        micajero.setBilletes(carga_billetes);
-        micajero.getListaTarjetas().add(mitarj1);
-        micajero.getListaTarjetas().add(mitarj2);
         while (continuar) {
 
             micajero.getListaTarjetas().forEach(tarjeta -> tarjeta.mostrarTarjeta());
             micajero.mostrarCajero();
             mostrarMenu();
-            System.out.print("Escribe una de las opciones: ");
-            opcionSeleccionada = sc.nextInt();
+
+            String opcionSeleccionada = Util.hacerPregunta("Escribe una de las opciones");
+            while (!Util.esNumero(opcionSeleccionada) || !((Integer.parseInt(opcionSeleccionada) >= 1) && (Integer.parseInt(opcionSeleccionada) <= 2))) {
+                System.out.println("Selecciona una de las opciones!");
+                opcionSeleccionada = Util.hacerPregunta("Escribe una de las opciones");
+            }
+
             System.out.println("Has seleccionado la opcion: " + opcionSeleccionada);
 
-            if (opcionSeleccionada == 1) {
-                System.out.print("Dame el NIF: ");
-                sc.nextLine();
-                NIF = sc.nextLine();
-                System.out.print("Dame el PIN: ");
-                PIN = sc.nextInt();
-                Tarjeta tarjetaOperando = micajero.comprobarDatos(NIF, PIN);
-                if (!(tarjetaOperando == null)) {
-                    System.out.print("Que cantidad deseas sacar?: ");
-                    efectivoSolicitado = sc.nextInt();
-                    if (efectivoSolicitado <= micajero.cantidadDineroCajero()) {
-                        if (tarjetaOperando instanceof TarjetaCredito) {
-                            micajero.sacarDineroCredito(tarjetaOperando, efectivoSolicitado);
+            if (opcionSeleccionada.equals("1")) {
+
+                String NIF = Util.hacerPregunta("Dame el NIF");
+                String PIN = Util.hacerPregunta("Dame el PIN");
+
+                while (!Util.esNumero(PIN)) {
+                    System.out.println("Introduce números!!");
+                    PIN = Util.hacerPregunta("Dame el PIN");
+                }
+
+                Tarjeta tarjetaOperando = micajero.comprobarDatos(NIF, Integer.parseInt(PIN));
+
+                if (!(tarjetaOperando == null)) { // Comprobamos si la tarjeta es correcta
+                    String efectivoSolicitado = Util.hacerPregunta("Que cantidad desear sacar?");
+                    while (!Util.esNumero(efectivoSolicitado)) {
+                        efectivoSolicitado = Util.hacerPregunta("Que cantidad desear sacar?");
+                    }
+
+                    if (Integer.parseInt(efectivoSolicitado) <= micajero.cantidadDineroCajero()) {// Comprobamos si hay dinero en el cajero
+                        if (tarjetaOperando instanceof TarjetaCredito) {// instancias
+                            micajero.sacarDineroCredito(tarjetaOperando, Integer.parseInt(efectivoSolicitado));
                         } else {
-                            micajero.sacarDineroDebito(tarjetaOperando, efectivoSolicitado);
+                            micajero.sacarDineroDebito(tarjetaOperando, Integer.parseInt(efectivoSolicitado));
                         }
                     } else {
                         System.out.println("No tenemos dinero en efectivo para la cantidad solicitada.");
@@ -59,7 +62,7 @@ public class ProgramaCajero {
 
     }
 
-    public static void mostrarMenu() {
+    private static void mostrarMenu() {
         System.out.println("============================");
         System.out.println("-----------MENÚ-------------");
         System.out.println("1. Opcion 1 - Sacar Dinero");
@@ -67,7 +70,6 @@ public class ProgramaCajero {
         System.out.println("----------------------------");
         System.out.println("============================");
     }
-
 
 }
 

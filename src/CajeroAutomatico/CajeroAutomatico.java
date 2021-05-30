@@ -30,7 +30,7 @@ public class CajeroAutomatico {
                     return tarjeta;
                 } else {
                     System.out.println("PIN INCORRECTO");
-                    break;
+                    return null;
                 }
             }
         }
@@ -102,6 +102,16 @@ public class CajeroAutomatico {
             }
         }
         return ct;
+    }
+
+    public void inicializarDatosCajero() {
+        int[][] carga_billetes = {{500, 1}, {200, 3}, {100, 0}, {50, 0}, {20, 0}, {10, 18}, {5, 25}};
+        TarjetaDebito tarj1 = new TarjetaDebito("12345678a", 1111, "Fran", "Fran", 2000);
+        TarjetaCredito tarj2 = new TarjetaCredito("87654321b", 2222, "Javi", "Javi", 10, 1000);
+        setBilletes(carga_billetes);
+        listaTarjetas.add(tarj1);
+        listaTarjetas.add(tarj2);
+
     }
 
     public int getIdUltCaj() {
